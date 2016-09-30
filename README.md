@@ -1,4 +1,4 @@
-**Release Notes for version 1.5.5 
+**Release Notes for version 1.5.5** 
 - Fixed the issue in QuickLock that causesed it to be in locked state at creation sometimes 
 - Fixed the issue of "cannot start a new transaction" on DbContext when multiple threads are involved 
 - DataManager correctly keeps track of DbContexts with the threads 
