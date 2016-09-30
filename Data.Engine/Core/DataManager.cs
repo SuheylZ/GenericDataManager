@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+
 using DataManager.Interfaces;
 using System.Data.Entity;
 using System.Data.Entity.Core.EntityClient;
@@ -16,7 +15,7 @@ namespace DataManager.Core
     /// <summary>
     /// DataManager keeps track of all EntityOperations and provides a single instantiation of EntityOperation of each particular entity.
     /// </summary>
-    public class DataManager : Interfaces.IEntityGateway, IDataManager
+    public class DataManager : Interfaces.IContextProvider, IDataManager
     {
         ConnectionParameters KConnectionParameters;
         static ThreadMap4Items<int, object> _map;
@@ -24,33 +23,25 @@ namespace DataManager.Core
         /// <summary>
         /// Establishes the connection and initializes internal structures
         /// </summary>
-        /// <param name="connectionStr">basic connection string</param>
-        /// <param name="model">the name of the model without the extensions</param>
-        /// <param name="provider">provider name, default is System.Data.SqlClient</param>
-        /// <param name="maxWait">The maximum duration for after which the operation must fail if lock could not be acquired.</param>
+        /// <param name="arg">structure that holds the connection information</param>
         public DataManager(ConnectionParameters arg)
         {
             Contract.Requires(!string.IsNullOrEmpty(arg.connection));
             Contract.Requires(!string.IsNullOrEmpty(arg.modelResource));
 
             KConnectionParameters = arg;
-            _map = new ThreadMap4Items<int, object>(16);
+            _map = new ThreadMap4Items<int, object>(16, (obj)=> (obj as IDisposable).Dispose());
             _map.Add(Thread.CurrentThread.ManagedThreadId, CreateDbContext());
         }
 
-        void IEntityGateway.Release(int id)
+        void IContextProvider.Release(int id)
         {
-            Contract.Requires(id>0);
-            
-            if (_map.Has(id))
-            {
-                var count = _map.Free(id);
-                if (count == 0)
-                {
-                    var obj = _map.Delete(id) as IDisposable;
-                    obj.Dispose();
-                }
-            }
+            if (!_map.Has(id))
+                throw new InvalidOperationException("Removal request for an Operation provider whose record is missing");
+
+            _map.Free(id);
+            if (_map.ReferenceCount(id) < 1)
+                _map.Delete(id);
         }
 
         /// <summary>
@@ -58,67 +49,53 @@ namespace DataManager.Core
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        IEntityReaderWriter<TEntity> IDataManager.Get<TEntity>() {
+        IEntityReaderWriter<TEntity> IDataManager.Get<TEntity>()
+        {
             Contract.Ensures(Contract.Result<IEntityReaderWriter<TEntity>>() != null);
 
-            var id = Thread.CurrentThread.ManagedThreadId;
-            var provider = (this as IEntityGateway);
+            var threadId = Thread.CurrentThread.ManagedThreadId;
+            var provider = (this as IContextProvider);
             
-
             IEntityReaderWriter<TEntity> ret = null;
-            if (!_map.Has(id))
-                _map.Add(id, CreateDbContext());
+            if (!_map.Has(threadId))
+                _map.Add(threadId, CreateDbContext());
 
             ret = new EntityOperationProvider<TEntity>();
-            (ret as Interfaces.IEntityGatewayClient).Register(this, id);
+            (ret as Interfaces.IContextConsumer).Consume(this, threadId);
 
             return ret;
         }
 
         void IDisposable.Dispose()
         {
-            var contexts = _map.Clear();
-            var error = new List<Exception>();
-
-            foreach(var it in contexts)
-            {
-                try
-                {
-                    (it as IDisposable).Dispose();
-                }
-                catch(Exception ex)
-                {
-                    error.Add(ex);
-                }
-            }
-
-            if (error.Count > 0)
-                throw new AggregateException(error.ToArray());
+            _map.Clear();
         }
 
-        DbSet<TEntity> IEntityGateway.Set<TEntity>()
+        DbSet<TEntity> IContextProvider.Set<TEntity>()
         {
-            return (this as IEntityGateway).Context.Set<TEntity>();
+            Contract.Requires((this as IContextProvider).Context != null);
+            return (this as IContextProvider).Context.Set<TEntity>();
         }
 
-        ObjectContext IEntityGateway.ObjectContext
+        ObjectContext IContextProvider.ObjectContext
         {
             get
             {
+                Contract.Requires((this as IContextProvider).Context != null);
+
                 ObjectContext ret = null;
-                var adapter = (this as IEntityGateway).Context as IObjectContextAdapter;
+                var adapter = (this as IContextProvider).Context as IObjectContextAdapter;
                 if(adapter != null)
                     ret = adapter.ObjectContext;
                 return ret;
             }
         }
 
-        DbContext IEntityGateway.Context
+        DbContext IContextProvider.Context
         {
             get
             {
                 var value = _map[Thread.CurrentThread.ManagedThreadId] as DbContext;
-
                 return value;
             }
         }
@@ -142,26 +119,26 @@ namespace DataManager.Core
             return ret;
         }
 
-        void IEntityGateway.Save()
+        void IContextProvider.Save()
         {
+            Contract.Requires((this as IContextProvider).Context != null);
+
             try
             {
-                (this as IEntityGateway).Context.SaveChanges();
+                (this as IContextProvider).Context.SaveChanges();
             }
             catch (Exception ex)
             {
-                var innerException = ex;
-                while (innerException.InnerException != null)
-                    innerException = innerException.InnerException;
+                while (ex.InnerException != null)
+                    ex = ex.InnerException;
 
-                throw innerException; 
+                throw ex; 
             }
         }
 
         ObjectResult<T> IDataManager.Execute<T>(string sql, params object[] args)
         {
-            var ret = default(ObjectResult<T>);
-            ret = (this as IEntityGateway).ObjectContext.ExecuteStoreQuery<T>(sql, args);
+            var ret = (this as IContextProvider).ObjectContext.ExecuteStoreQuery<T>(sql, args);
             return ret;
         }
 

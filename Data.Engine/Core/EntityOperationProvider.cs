@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using DataManager.Common;
+
 using DataManager.Interfaces;
+using System.Diagnostics.Contracts;
 
 namespace DataManager.Core
 {
     class EntityOperationProvider<TEntity> :
-        Interfaces.IEntityGatewayClient, Interfaces.IEntityReaderWriter<TEntity>
+        Interfaces.IContextConsumer, Interfaces.IEntityReaderWriter<TEntity>
         where TEntity:class
     {
         private int _key;
-        private IEntityGateway _provider;
+        private IContextProvider _provider;
 
 
-        void IEntityGatewayClient.Register(IEntityGateway arg, int key)
+        void IContextConsumer.Consume(IContextProvider arg, int key)
         {
-            Debug.Assert(arg != null);
             _provider = arg;
             _key = key;
         }
@@ -33,6 +31,8 @@ namespace DataManager.Core
 
         IQueryable<TEntity> IEntityReader<TEntity>.All(Expression<Func<TEntity, bool>> expr)
         {
+            Contract.Requires(_provider.Set<TEntity>() != null);
+
             return expr == null ?
                 _provider.Set<TEntity>() : _provider.Set<TEntity>().Where(expr); 
         }

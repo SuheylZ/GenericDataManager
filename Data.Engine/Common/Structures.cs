@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataManager.Common
 {
@@ -15,9 +13,9 @@ namespace DataManager.Common
 
         public ConnectionParameters(string cnnStr, string modelName, int secondsDelay=30, string providerName = "System.Data.SqlClient")
         {
-            connection = cnnStr.IndexOf(Konstants.MultipleActiveRecordSets)==-1?
-                string.Concat(cnnStr, Konstants.MultipleActiveRecordSets, ";") :
-                cnnStr;
+            Contract.Requires(cnnStr!=null);
+
+            connection = cnnStr.Contains(Konstants.MultipleActiveRecordSets) ? cnnStr : string.Concat(cnnStr, Konstants.MultipleActiveRecordSets, ";");
             modelResource = string.Format(@"res://*/{0}.csdl|res://*/{0}.ssdl|res://*/{0}.msl", modelName);
             provider = providerName;
             delay = TimeSpan.FromSeconds(secondsDelay);

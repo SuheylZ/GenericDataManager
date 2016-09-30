@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
 using System.Threading;
 using System.Diagnostics.Contracts;
 
@@ -9,43 +9,47 @@ namespace DataManager.Common
 {
     public class ThreadMap4Items<TKey, TValue> where TValue:new()
     {
-        ReaderWriterLockSlim _gate;
-        IDictionary<TKey, Countable<TValue>> _map;
+        readonly ReaderWriterLockSlim _gate;
+        readonly IDictionary<TKey, Countable<TValue>> _map;
+        readonly Action<TValue> _disposer;
 
 
-        public ThreadMap4Items(int capacity=64)
+
+        public ThreadMap4Items(int capacity=64, Action<TValue> valueDisposer=null)
         {
             _gate = new ReaderWriterLockSlim();
             _map = new Dictionary<TKey, Countable<TValue>>(capacity);
+            _disposer = valueDisposer;
         }
 
-        public TValue Add(TKey key, TValue value)
+        public void Add(TKey key, TValue value)
         {
             Contract.Requires(value != null);
+            Contract.Requires(key != null);
 
             var item = new Countable<TValue>(value);
 
             _gate.EnterWriteLock();
             _map.Add(key, item);
             _gate.ExitWriteLock();
-
-            return item.Item;
         }
-        public TValue Delete(TKey key)
+        public void Delete(TKey key)
         {
-            Contract.Ensures(Contract.Result<TValue>() != null);
+            Contract.Requires(key != null);
 
-            var ret = this[key];
+            var obj = this[key];
 
             _gate.EnterWriteLock();
             _map.Remove(key);
             _gate.ExitWriteLock();
 
-            return ret;
+            DisposeObjects(new TValue[] { obj });
         }
 
         public bool Has(TKey key)
         {
+            Contract.Requires(key != null);
+
             var ret = false;
 
             _gate.EnterReadLock();
@@ -58,36 +62,38 @@ namespace DataManager.Common
         {
             get
             {
-                TValue ret = default(TValue);
+                Contract.Requires(key != null);
+                Countable<TValue> value = null; 
 
                 _gate.EnterReadLock();
                 if (_map.ContainsKey(key))
-                {
-                    var item = _map[key];
-                    item.Increment();
-                    ret = item.Item;
-                }
+                    value = _map[key];
                 _gate.ExitReadLock();
 
-                return ret;
+                value.Increment();
+                return value.Item;
             }
-
         }
 
-        public int Free(TKey key)
+        public void Free(TKey key)
         {
-            var ret = 0;
+            Contract.Requires(key != null);
+
+            Countable<TValue> value=null;
 
             _gate.EnterReadLock();
-            _map[key].Decrement();
-            ret = _map[key].Count;
+            if (_map.ContainsKey(key))
+                value = _map[key];
             _gate.ExitReadLock();
 
-            return ret;
+            value.Decrement();
         }
-        public int ValueCount(TKey key)
+        public int ReferenceCount(TKey key)
         {
+            Contract.Requires(key != null);
+
             var ret = 0;
+
             _gate.EnterReadLock();
             ret = _map[key].Count;
             _gate.ExitReadLock();
@@ -108,21 +114,37 @@ namespace DataManager.Common
         }
 #endif
 
-        public List<TValue> Clear()
+        public void Clear()
         {
-            var ret = new List<TValue>(_map.Count);
-
-            _gate.EnterReadLock();
-            ret = _map.Values.Select(x => x.Item).ToList();
-            _gate.ExitReadLock();
+            TValue[] objects;
 
             _gate.EnterWriteLock();
-            _map.Clear();
+                objects = _map.Values.Select(x => x.Item).ToArray();
+                _map.Clear();
             _gate.ExitWriteLock();
 
-            return ret;
+            DisposeObjects(objects);
+
         }
 
-        
+        private void DisposeObjects(TValue[] objects)
+        {
+            if (_disposer != null)
+            {
+                var errors = new List<Exception>();
+                foreach (var it in objects)
+                    try
+                    {
+                        _disposer(it);
+                    }
+                    catch (Exception ex)
+                    {
+                        errors.Add(ex);
+                    }
+                if (errors.Count > 0)
+                    throw new AggregateException(errors.ToArray());
+            }
+        }
+
     }
 }

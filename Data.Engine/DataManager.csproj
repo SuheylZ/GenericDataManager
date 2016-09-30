@@ -28,7 +28,7 @@
     <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
     <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
     <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
-    <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
+    <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
     <CodeContractsBoundsObligations>True</CodeContractsBoundsObligations>
     <CodeContractsArithmeticObligations>True</CodeContractsArithmeticObligations>
     <CodeContractsEnumObligations>True</CodeContractsEnumObligations>
@@ -39,7 +39,7 @@
     <CodeContractsMissingPublicEnsuresAsWarnings>False</CodeContractsMissingPublicEnsuresAsWarnings>
     <CodeContractsInferRequires>True</CodeContractsInferRequires>
     <CodeContractsInferEnsures>False</CodeContractsInferEnsures>
-    <CodeContractsInferEnsuresAutoProperties>True</CodeContractsInferEnsuresAutoProperties>
+    <CodeContractsInferEnsuresAutoProperties>False</CodeContractsInferEnsuresAutoProperties>
     <CodeContractsInferObjectInvariants>False</CodeContractsInferObjectInvariants>
     <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
     <CodeContractsSuggestAssumptionsForCallees>False</CodeContractsSuggestAssumptionsForCallees>
@@ -61,7 +61,7 @@
     <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
     <CodeContractsSkipAnalysisIfCannotConnectToCache>False</CodeContractsSkipAnalysisIfCannotConnectToCache>
     <CodeContractsFailBuildOnWarnings>False</CodeContractsFailBuildOnWarnings>
-    <CodeContractsBeingOptimisticOnExternal>True</CodeContractsBeingOptimisticOnExternal>
+    <CodeContractsBeingOptimisticOnExternal>False</CodeContractsBeingOptimisticOnExternal>
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>

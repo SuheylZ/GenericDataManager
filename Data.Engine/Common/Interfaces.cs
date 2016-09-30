@@ -8,32 +8,32 @@ using System.Data.Entity.Core.Objects;
 
 namespace DataManager.Interfaces
 {
-    public interface IEntityGateway {
+    public interface IContextProvider {
 
         ObjectContext ObjectContext {get; }
         DbContext Context { get; }
-
         DbSet<TEntity> Set<TEntity>() where TEntity: class;
-        void Save();
 
+        void Save();
         void Release(int id);
     }
+
+
 
     /// <summary>
     /// An interface that must be implemented by the class that provides the IEntityReader or IEntityWriter interfaces. 
     /// This interface helps the class to get get the db context, concurrency and reference counting provided by the manager
     /// </summary>
-    public interface IEntityGatewayClient {
+    public interface IContextConsumer
+    {
         /// <summary>
         /// A client class class to get itself registered with the manager
         /// </summary>
         /// <param name="arg">An implementation (the class itself usually) that the manager uses to handle its instantiation and concurrency issues</param>
         /// <param name="key">A constant key to be provided by the class. A GUID for instance</param>
-        /// <param name="duration">duration for which a class can hold a lock if necessary</param>
-        void Register(IEntityGateway arg, int key);
+        void Consume(IContextProvider arg, int key);
     }
-
-    public interface IEntityReader<TEntity>: IDisposable where TEntity:class
+    public interface IEntityReader<TEntity>: IContextConsumer, IDisposable where TEntity:class
     {
         /// <summary>
         /// Retrieves a single record or 1st record if there are many, based on the expression provided
@@ -62,7 +62,7 @@ namespace DataManager.Interfaces
         IQueryable<TEntity> ReadOnly(Expression<Func<TEntity, bool>> expr = null);
     }
 
-    public interface IEntityWriter<TEntity> : IDisposable where TEntity : class
+    public interface IEntityWriter<TEntity> : IContextConsumer, IDisposable where TEntity : class
     {
         /// <summary>
         /// Adds an entity to the database
