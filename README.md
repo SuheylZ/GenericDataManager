@@ -1,3 +1,11 @@
+**Release Notes for version 1.5.5 
+- Fixed the issue in QuickLock that causesed it to be in locked state at creation sometimes 
+- Fixed the issue of "cannot start a new transaction" on DbContext when multiple threads are involved 
+- DataManager correctly keeps track of DbContexts with the threads 
+- DataManager requires ConnectionParameters struct for initialization rather than multiple parameters 
+- DataManager throws exception if disposed when the DbContext seem to be in use by other threads 
+- multiple threads can simaltaneously access database without locking each other in isolated manner (Entities attached to different thread's DbContext cannot be used by other threads unless detached).
+
 # GenericDataManager
 A generic data manager which  is thread safe and implements Repository pattern. All that you have to provide is 
  - A connection string that you commonly use without the entity framework model. 
