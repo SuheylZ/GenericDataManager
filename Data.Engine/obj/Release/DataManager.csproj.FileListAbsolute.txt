@@ -1,0 +1,7 @@
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\bin\Release\DataManager.dll.config
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\bin\Release\DataManager.dll
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\bin\Release\EntityFramework.dll
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\bin\Release\EntityFramework.SqlServer.dll
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\bin\Release\EntityFramework.xml
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\bin\Release\EntityFramework.SqlServer.xml
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\obj\Release\DataManager.dll

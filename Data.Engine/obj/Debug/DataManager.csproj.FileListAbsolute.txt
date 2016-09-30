@@ -1,0 +1,16 @@
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\bin\Debug\CodeContracts\DataManager.Contracts.dll
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\bin\Debug\CodeContracts\DataManager.Contracts.pdb
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\bin\Debug\DataManager.dll.config
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\bin\Debug\DataManager.dll
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\bin\Debug\DataManager.pdb
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\bin\Debug\EntityFramework.dll
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\bin\Debug\EntityFramework.SqlServer.dll
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\bin\Debug\EntityFramework.xml
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\bin\Debug\EntityFramework.SqlServer.xml
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\obj\Debug\Decl\DataManager.dll
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\obj\Debug\Decl\DataManager.pdb
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\obj\Debug\DataManagerccrefgen.rsp
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\obj\Debug\DataManager.rewritten
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\obj\Debug\DataManager.dll
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\obj\Debug\DataManager.pdb
+F:\Projects\GenericDataManager\GenericDataManager\Data.Engine\obj\Debug\CodeContractAnalysisRun.log
