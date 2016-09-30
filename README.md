@@ -1,3 +1,8 @@
+# GenericDataManager
+A generic data manager which  is thread safe and implements Repository pattern. All that you have to provide is 
+ - A connection string that you commonly use without the entity framework model. 
+ - the name of the model 
+
 **Release Notes for version 1.5.5** 
 - Fixed the issue in QuickLock that causesed it to be in locked state at creation sometimes 
 - Fixed the issue of "cannot start a new transaction" on DbContext when multiple threads are involved 
@@ -6,11 +11,7 @@
 - DataManager throws exception if disposed when the DbContext seem to be in use by other threads 
 - multiple threads can simaltaneously access database without locking each other in isolated manner (Entities attached to different thread's DbContext cannot be used by other threads unless detached).
 
-# GenericDataManager
-A generic data manager which  is thread safe and implements Repository pattern. All that you have to provide is 
- - A connection string that you commonly use without the entity framework model. 
- - the name of the model 
- 
+**Sample Working**
 The DataManager will build the rest of the connection string itself and create the context. You can safely delete the context from your entities project, if you have that in your Model. Here is how you would use the DataManager.
 
             var str = ConfigurationManager.ConnectionStrings["myConnectionString"].ConnectionString;
