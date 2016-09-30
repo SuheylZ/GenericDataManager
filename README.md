@@ -12,6 +12,13 @@ A generic data manager which  is thread safe and implements Repository pattern. 
 - multiple threads can simaltaneously access database without locking each other in isolated manner (Entities attached to different thread's DbContext cannot be used by other threads unless detached).
 
 **Sample Working**
+
+To use it
+ - Use the nuget package https://www.nuget.org/packages/GenericDataManager OR 
+ - Use the command from package console 
+ 
+ PM> Install-Package GenericDataManager
+
 The DataManager will build the rest of the connection string itself and create the context. You can safely delete the context from your entities project, if you have that in your Model. Here is how you would use the DataManager.
 
             var str = ConfigurationManager.ConnectionStrings["myConnectionString"].ConnectionString;
