@@ -1,4 +1,5 @@
-# GenericDataManager
+[![1475334088_database.png](https://s15.postimg.org/e3e6com23/1475334088_database.png)](https://postimg.org/image/vgogrjhd3/)
+# GenericDataManager  
 ### Release Notes for version 1.5.5
 - Fixed: sometimes the QuickLock is already in locked state on creation from worker threads 
 - Fixed: "Cannot start a new transaction" on DbContext when multiple threads are involved
