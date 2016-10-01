@@ -36,7 +36,7 @@ The DataManager will build the rest of the connection string itself and create t
             
             
             } // as soon as Dispose is called on repository the DataManager will take care of the rest. 
-            ```
+```
 How is it different: 
 The Data Manager keeps a Map that holds all the Repositories. if the requested repository for that Entity type is already in the map, it reference counts it and returns so the same Repository for that Entity is shared across different requests. If the repository is not there, The DataManager creates ones and returns the instance. The operations are thread safe as the DataManager utilizes QuickLock.
 
