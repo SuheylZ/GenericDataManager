@@ -28,13 +28,14 @@ The DataManager will build the rest of the connection string itself and create t
             // Suppose you have an Entity Person. Here's how you would use it
             using(var repository = manager.Get<Person>()){
             
-              Console.WriteLine(string.Format("There are {0} persons in the database", repository.Count()));
+              Console.WriteLine(string.Format("There are {0} persons who are 20 years old", repository.Count(x=>x.Age==20)));
               
-              //blah blah
+              //Now update all of them with a comment. note that you are not iterating over a list of persons
+	      repository.Update(x=>x.Age==20, x=>x.Notes = "We got ya");
+	      
+	      //Delete all below 10. See! you only supply the predicate and tell it what to do. Functional style Eh?
+	      repository.Delete(x=>x.Age=<10);
              
-            
-            
-            
             } // as soon as Dispose is called on repository the DataManager will take care of the rest. 
 ```
 How is it different: 
@@ -44,7 +45,6 @@ The Data Manager keeps a Map that holds all the Repositories. if the requested r
 I'm in the process of updating unit tests and gathering some performance metrics. it will take a while.
 
 **QuickLock**
-
 Quicklock is an inter thread synchronization class. You can use it instead of C#’s `lock` keyword which internally uses Monitor. It provides performance using the Interlocked.Exchange methods. If the lock cannot be acquired, it retries for few times after which it throws the TimeoutException. Here is how you would use:
 
 
@@ -76,17 +76,17 @@ var  qlock = new QuickLock();  //use defaults
 
 ---------------------------------------------------------------------
 
-**IEntityReaderWriter**
+**IEntityWriter**
+Provides functions that change the state of the database by adding, changing or removing the data.
+*Currently the data manager does not provide any implementation for this interface. See IEntityReaderWriter below*
 
-`Commands`
+`Single Record Commands`
 
 | Functions              |  Notes                                   |
 |:-----------------------|:-----------------------------------------|
 | Add(TEntity)           | Adds an entities to the database         | 
 | Delete(TEntity expr)   | Deletes a single entity from the database|   
 | Update(TEntity arg)    | Updates a single entity to the database  |   
-
-
 
 
 `Bulk Commands`
@@ -98,10 +98,16 @@ var  qlock = new QuickLock();  //use defaults
 | Delete(Expression<Func<TEntity, bool>> expr) | Deletes entities from  the database that match the expression you specify|
 
 
+**IEntityReader**
+Provies queries that do not change the state of the database, that is, provides functions that only retrieve data but cannot alter it. *Currently the data manager does not provide any implementation for this interface. See IEntityReaderWriter below*
 `Queries`
 
 |Functions	|Returns |Notes   	|
 |---	|---	|---	|
-|Exists(Expression<Func <TEntity, bool>> expr)|bool| true if at least 1 entity satisfies the expression	|
+|Exists(Expression<Func <TEntity, bool>> expr) | bool | true if at least 1 entity satisfies the expression	|
 |All(Expression<Func<TEntity, bool>> expr) | IQueryable<TEntity>| Linq Where() eqvivalent 	|
-|  	|long |Linq Count() with expression speciying the criteria|   
+|Count(Expression<Func<TEntity, bool>> expr)|long |Linq Count() with expression speciying the criteria |   
+|One(Expression<Func<TEntity, bool>> expr) | TEntity| returns a single record, if there are many then only the first one of the list|
+
+**IEntityReaderWriter: IEntityReader, IEntityWriter**
+The data manager returns only this interface implementation so you get all the queries and commands mentioned above. Separate reader and writer interface implementations are planned for future versions so stay tuned. 
