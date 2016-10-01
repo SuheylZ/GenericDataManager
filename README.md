@@ -100,20 +100,26 @@ Provides functions that change the state of the database by adding, changing or 
 
 #### Single Record Commands
 
-| Functions              |  Notes                                   |
-|:-----------------------|:-----------------------------------------|
-| Add(TEntity)           | Adds an entities to the database         | 
-| Delete(TEntity expr)   | Deletes a single entity from the database|   
-| Update(TEntity arg)    | Updates a single entity to the database  |   
+| Functions              |  Notes                           |
+|:-----------------------|:---------------------------------|
+| Add(TEntity)           | Adds an entitiy to the database  | 
+| Delete(TEntity expr)   | Deletes an entitiy from the database|   
+| Update(TEntity arg)    | Updates an entitiy into the database  |   
 
 
 #### Bulk Commands
 
-| Functions   |     Notes     |
+| Functions |     Notes    |
 |:----------|:-------------|
-| Add(IEnumerable< TEntity> list) | Adds a list of entities to the database | 
-| Update(Expression<Func<TEntity, bool>> expr, Action<TEntity> statement) | Specify a linq expression and an action, the function is equivalent to Update - Where |   
-| Delete(Expression<Func<TEntity, bool>> expr) | Deletes entities from  the database that match the expression you specify|
+| Add(IEnumerable&lt;TEntity&gt; list) | Adds a list of entities to the database | 
+
+
+#### Bulk Commands LINQ based
+| Functions |     Notes    |
+|:----------|:-------------|
+| Update(Expression&lt;Func&lt;TEntity, bool&gt;&gt; expr, Action&lt;TEntity&gt; statement) | Specify a linq expression and an action, the function is equivalent to Update - Where |   
+| Delete(Expression&lt;Func&lt;TEntity, bool&gt;&gt; expr) | Deletes entities from  the database that match the expression you specify|
+
 
 ### IEntityReader
 Provies queries that do not change the state of the database, that is, provides functions that only retrieve data but cannot alter it. *Currently the data manager does not provide any implementation for this interface. See IEntityReaderWriter below*
@@ -121,10 +127,10 @@ Provies queries that do not change the state of the database, that is, provides 
 
 |Functions	|Returns |Notes   	|
 |---	|---	|---	|
-|Exists(Expression<Func <TEntity, bool>> expr) | bool | true if at least 1 entity satisfies the expression	|
-|All(Expression<Func<TEntity, bool>> expr) | IQueryable<TEntity>| Linq Where() eqvivalent 	|
-|Count(Expression<Func<TEntity, bool>> expr)|long |Linq Count() with expression speciying the criteria |   
-|One(Expression<Func<TEntity, bool>> expr) | TEntity| returns a single record, if there are many then only the first one of the list|
+|Exists(Expression&lt;Func&lt;TEntity, bool&gt;&gt; expr) | bool | true if at least 1 entity satisfies the expression	|
+|All(Expression&lt;Func&lt;TEntity, bool&gt;&gt; expr) | IQueryable<TEntity>| Linq Where() eqvivalent 	|
+|Count(Expression&lt;Func&lt;TEntity, bool&gt;&gt; expr)|long |Linq Count() with expression speciying the criteria |   
+|One(Expression&lt;Func&lt;TEntity, bool&gt;&gt; expr) | TEntity| returns a single record, if there are many then only the first one of the list|
 
 ### IEntityReaderWriter: IEntityReader, IEntityWriter
 The data manager returns only this interface implementation so you get all the queries and commands mentioned above. Separate reader and writer interface implementations are planned for future versions so stay tuned. 
