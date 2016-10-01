@@ -8,6 +8,20 @@
 - DataManager throws exception if disposed when the DbContext seem to be in use by other threads 
 - multiple threads can simaltaneously access database without locking each other in isolated manner (Entities attached to different thread's DbContext cannot be used by other threads unless detached).
 
+**How to use it?**
+To use it
+ - Use the nuget package [GenericDataManager](https://www.nuget.org/packages/GenericDataManager) to install it OR 
+ - Use the command `PM> Install-Package GenericDataManager` from package console OR
+ - (least recomended) Download the source I have placed here and compile it yourself
+ 
+ *Please report the features you want or issues you encounter, your feedback means alot*
+ 
+ **Features requested and planned for next releases**
+ - Separate implementations of IEntityReader & IEntityWriter
+ - ability to use Repositories without calling dispose
+ - DI container friendly (not on priority because it is threadsafe & can be used as singleton)
+ - Ability to provide custom implementations for IContextConsumer and IContextProvider
+ 
 ## Notes
 Generic data manager is a thread safe IUnitOfWork repository tailered for your entities and takes care of all the plumbing so that you only concentrate on the database design and using that data. How to fetch it, common functions for manipulating the data, handiong the DbContexts, thread synchronization for DB calls, properly initializing and cleaning up everything ... well! forget about all that. just provide your model name and plain old simple connection to your database and enjoy the beer! DataManager will take care of 
  - Create per thread DbContexts
@@ -20,11 +34,7 @@ Generic data manager is a thread safe IUnitOfWork repository tailered for your e
 
 So it gives you all the EntityFramework benefits without you using the EntityFramework directly and tries to do even more. All it asks you is provide a simple connection string in simple english [ConnectionStrings.com](www.connectionstrings.com) and only the name of your model. and it does the rest. 
 
-**Sample Working**
 
-To use it
- - Use the nuget package [GenericDataManager](https://www.nuget.org/packages/GenericDataManager) OR 
- - Use the command from package console 
  
  PM> Install-Package GenericDataManager
 
