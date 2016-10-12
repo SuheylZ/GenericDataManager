@@ -41,16 +41,9 @@ namespace GenericDataManager
 
         void IEntityGateway.Release(int id)
         {
-            //Contract.Requires(id > 0);
-
             if (_map.Has(id))
             {
                 var count = _map.Free(id);
-                //if (count == 0)
-                //{
-                //    var obj = _map.Delete(id) as IDisposable;
-                //    obj.Dispose();
-                //}
             }
         }
 

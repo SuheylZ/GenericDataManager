@@ -8,7 +8,8 @@ using System.Collections;
 
 namespace GenericDataManager.Common
 {
-    public class ThreadMap4Items<TKey, TValue>: IEnumerable<TValue> where TValue:class
+    public class ThreadMap4Items<TKey, TValue>: 
+        IEnumerable<TValue> where TValue:class
     {
         ReaderWriterLockSlim _gate;
         IDictionary<TKey, Countable<TValue>> _map;
