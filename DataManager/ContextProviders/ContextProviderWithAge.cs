@@ -21,6 +21,7 @@ namespace GenericDataManager.Providers
         {
             _createdAt = DateTime.Now;
             _lastUsed = _createdAt;
+            ObjectContext.SavingChanges += (sender, args) => _lastUsed = DateTime.Now;
         }
 
         internal TimeSpan Age => DateTime.Now.Subtract(_createdAt);

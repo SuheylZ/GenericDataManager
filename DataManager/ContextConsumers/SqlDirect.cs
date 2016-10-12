@@ -78,30 +78,22 @@ namespace GenericDataManager.Consumers
                 cmd.Parameters.Add(p);
             }
         }
-        protected override void InnerCleanup()
+
+        protected override void Dispose(bool disposing)
         {
-            AggregateExceptionBuilder builder = new AggregateExceptionBuilder("Some Datareaders might be open");
+            var builder = new AggregateExceptionBuilder("Some DataReader objects might be open");
             
             while (_stk.Count > 0)
             {
                 var rd = _stk.Pop();
-
-                try
-                {
-                    if (!rd.IsClosed)
-                    {
-                        rd.Close();
-                        rd.Dispose();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    builder.Add(ex);
-                }
+                if (!rd.IsClosed)
+                    SandBox.TRY(() => rd.Dispose(), (ex) => builder.Add(ex));
             }
+
+            base.Dispose(disposing);
+
             if (builder.HasErrors)
                 throw builder.ToAggregateException();
         }
-
     }
 }

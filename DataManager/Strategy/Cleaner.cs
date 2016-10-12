@@ -74,11 +74,53 @@ namespace GenericDataManager.Common
             _pauseEvent.Reset();
         }
 
-        public void Dispose()
+        void ICleaner.Start()
         {
-            _stopEvent.Set();
-            _cleaner.Join();
+            throw new NotImplementedException();
         }
+
+        void ICleaner.Pause()
+        {
+            throw new NotImplementedException();
+        }
+
+        void ICleaner.Resume()
+        {
+            throw new NotImplementedException();
+        }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _stopEvent.Set();
+                    _cleaner.Join();
+
+                    _pauseEvent.Close();
+                    _pauseEvent.Dispose();
+                    _stopEvent.Close();
+                    _stopEvent.Dispose();
+                }
+                disposedValue = true;
+            }
+        }
+
+         ~Cleaner()
+        {
+            Dispose(false);
+        }
+
+        void IDisposable.Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }
 

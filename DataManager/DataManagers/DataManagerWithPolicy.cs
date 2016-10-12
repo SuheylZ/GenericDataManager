@@ -70,10 +70,18 @@ namespace GenericDataManager
 
         }
 
-        public void Dispose()
+        IDataRepository IDataRepositoryProvider.Repository
         {
-            _cleaner.Dispose();
+            get
+            {
+                throw new NotImplementedException();
+            }
         }
+
+        //public void Dispose()
+        //{
+        //    _cleaner.Dispose();
+        //}
 
 
 #if DEBUG
@@ -82,5 +90,32 @@ namespace GenericDataManager
             return $"_map: {_map.ToString()}";
         }
 #endif
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                   _cleaner.Dispose(); 
+                }
+                disposedValue = true;
+            }
+        }
+
+        ~DataManagerWithPolicy()
+        {
+            Dispose(false);
+        }
+
+        void IDisposable.Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
+
     }
 }

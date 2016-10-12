@@ -10,7 +10,8 @@ using GenericDataManager.Providers;
 
 namespace GenericDataManager.Strategies
 {
-    public class CleaningStrategy: IDisposable 
+    public class CleaningStrategy: 
+        IDisposable 
     {
         protected readonly IContextMap _map;
         protected readonly ExecutionPolicy KPolicy;
@@ -64,7 +65,8 @@ namespace GenericDataManager.Strategies
         }
     }
 
-    public class RemoveUnused: CleaningStrategy
+    public class RemoveUnused: 
+        CleaningStrategy
     {
         internal RemoveUnused(IContextMap map, ExecutionPolicy policy) : base(map, policy) { }
 
@@ -82,7 +84,8 @@ namespace GenericDataManager.Strategies
         }
     }
 
-    public class RemoveOnlyWhenThreadIsDead: CleaningStrategy
+    public class RemoveOnlyWhenThreadIsDead: 
+        CleaningStrategy
     {
         internal RemoveOnlyWhenThreadIsDead(IContextMap map, ExecutionPolicy policy) : base(map, policy) { }
 
@@ -104,9 +107,11 @@ namespace GenericDataManager.Strategies
         }
     }
 
-    public class RemoveLeastRecentlyUsed: CleaningStrategy
+    public class RemoveLeastRecentlyUsed: 
+        CleaningStrategy
     {
         readonly TimeSpan _minAge = TimeSpan.FromSeconds(10);
+        Func<TimeSpan, bool> IsOlder => (age) => TimeSpan.Compare(_minAge, age) < 0;
 
         internal RemoveLeastRecentlyUsed(IContextMap map, ExecutionPolicy policy) : base(map, policy)
         {
@@ -124,11 +129,14 @@ namespace GenericDataManager.Strategies
                 var provider = pair.Provider as ContextProviderWithAge;
                 if (provider != null)
                 {
-                    if (provider.ConsumerCount == 0)
+                    if (provider.ConsumerCount > 0)
                     {
-                        if (TimeSpan.Compare(_minAge, provider.LastUsed) < 0)
+                        if (IsOlder(provider.LastUsed))
                             dispoablePairs.Add(pair);
-                    } 
+                    }
+                    else
+                        dispoablePairs.Add(pair);
+
                 }
             }
 
@@ -136,8 +144,12 @@ namespace GenericDataManager.Strategies
             foreach(var key in keys)
             {
                 var tmp = _map[key].Provider as ContextProviderWithAge;
-                if (tmp != null && tmp.ConsumerCount == 0 && TimeSpan.Compare(_minAge, tmp.LastUsed) < 0)
-                    _map.Remove(key);
+                if (tmp != null && IsOlder(tmp.LastUsed))
+                {
+                    var disposable = _map.Remove(key);
+                    disposable.Dispose();
+                }
+                    
             }
         }
     }

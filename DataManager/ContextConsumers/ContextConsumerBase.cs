@@ -5,19 +5,16 @@ using GenericDataManager.Interfaces;
 
 namespace GenericDataManager.Consumers
 {
-    public class ContextConsumerBase : IContextConsumer, IDisposable
+    public class ContextConsumerBase : IContextConsumer
     {
         protected IContextProvider _provider;
         private string _key;
+
         protected static readonly Tuple<int, int, int, int> EntityFrameworkVersion = Konstants.GetEntityFrameworkVersion();
 
         internal ContextConsumerBase(IContextProvider arg)
         {
             _provider = arg;
-        }
-        void IDisposable.Dispose()
-        {
-            _provider.Release(this, _key);
         }
 
         void IContextConsumer.Init(IContextProvider arg, string key)
@@ -25,11 +22,6 @@ namespace GenericDataManager.Consumers
             _provider = arg;
             _key = key;
         }
-        void IContextConsumer.Cleanup()
-        {
-            InnerCleanup();
-        }
-
 
         protected void Save(bool useTransaction = false)
         {
@@ -65,8 +57,36 @@ namespace GenericDataManager.Consumers
                     _provider.ObjectContext.Connection.Open();
         }
 
-        protected virtual void InnerCleanup()
-        {}
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                   _provider.Release(this, _key);
+                    _provider = null;
+                }
+                disposedValue = true;
+            }
+        }
+
+        ~ContextConsumerBase()
+        {
+            Dispose(false);
+        }
+
+        void IDisposable.Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
+
+
 
     }
 }

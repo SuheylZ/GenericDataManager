@@ -53,10 +53,9 @@ namespace GenericDataManager.Interfaces
         ObjectContext ObjectContext { get; }
         void Release(IContextConsumer arg, string key);
     }
-    public interface IContextConsumer
+    public interface IContextConsumer: IDisposable
     {
         void Init(IContextProvider arg, string key);
-        void Cleanup();
     }
 
 

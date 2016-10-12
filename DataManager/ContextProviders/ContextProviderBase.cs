@@ -86,15 +86,21 @@ namespace GenericDataManager.Providers
             if (!_map.ContainsKey(key))
                 throw new ObjectDisposedException($"ContextConsumer could not be found. Error in thread {Thread.CurrentThread.ManagedThreadId}");
 
-            var consumer = _map[key];
-            consumer.Cleanup();
             _map.Remove(key);
         }
-        public virtual void Dispose()
+
+        public void Dispose()
         {
-            foreach (var it in _map.Values)
-                it.Cleanup();
+            var keys = _map.Keys;
+            foreach (var key in keys)
+            {
+                var consumer = _map[key];
+                consumer.Dispose();
+            }
+
             _map.Clear();
+
+            _objctx.Connection.Close();
 
             _objctx.Dispose();
             _ctx.Dispose();
