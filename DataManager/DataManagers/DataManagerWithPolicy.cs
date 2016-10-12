@@ -55,7 +55,7 @@ namespace GenericDataManager
             _cleaner.Start();
         }
 
-        public IDataRepository Repository
+        IDataRepository IDataRepositoryProvider.Repository
         {
             get
             {
@@ -64,24 +64,9 @@ namespace GenericDataManager
                 if (!_map.Has(thread))
                    _map.Add(thread, _creator.Create(thread));
 
-                var provider = _map[thread.ManagedThreadId].Provider;
-                return provider as IDataRepository;
-            }
-
-        }
-
-        IDataRepository IDataRepositoryProvider.Repository
-        {
-            get
-            {
-                throw new NotImplementedException();
+                return _map[thread.ManagedThreadId].Provider as IDataRepository;
             }
         }
-
-        //public void Dispose()
-        //{
-        //    _cleaner.Dispose();
-        //}
 
 
 #if DEBUG
@@ -90,8 +75,10 @@ namespace GenericDataManager
             return $"_map: {_map.ToString()}";
         }
 #endif
+
+
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        private bool disposedValue = false; 
 
         protected virtual void Dispose(bool disposing)
         {

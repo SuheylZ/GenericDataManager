@@ -141,16 +141,16 @@ namespace GenericDataManager.Common
             return ret;
         }
 
-        IEnumerator<TValue> IEnumerable<TValue>.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
-
         IEnumerator IEnumerable.GetEnumerator()
         {
             var values = _map.Values.Select(x => x.Item).ToList();
-            foreach(var it in values)
+            foreach (var it in values)
                 yield return it;
+        }
+
+        IEnumerator<TValue> IEnumerable<TValue>.GetEnumerator()
+        {
+            return (this as IEnumerable).GetEnumerator() as IEnumerator<TValue>;
         }
     }
 }

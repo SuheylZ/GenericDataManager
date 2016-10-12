@@ -89,25 +89,6 @@ namespace GenericDataManager.Providers
             _map.Remove(key);
         }
 
-        public void Dispose()
-        {
-            var keys = _map.Keys;
-            foreach (var key in keys)
-            {
-                var consumer = _map[key];
-                consumer.Dispose();
-            }
-
-            _map.Clear();
-
-            _objctx.Connection.Close();
-
-            _objctx.Dispose();
-            _ctx.Dispose();
-        }
-
-
-
         ISqlDirect IDataRepository.Sql
         {
             get
@@ -155,5 +136,45 @@ namespace GenericDataManager.Providers
             }
             return _map[key] as IEntityReaderWriter<TEntity>;
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    var keys = _map.Keys;
+                    foreach (var key in keys)
+                    {
+                        var consumer = _map[key];
+                        if(consumer!=null)
+                            consumer.Dispose();
+                    }
+
+                    _map.Clear();
+
+                    _objctx.Connection.Close();
+
+                    _objctx.Dispose();
+                    _ctx.Dispose();
+                }
+                disposedValue = true;
+            }
+        }
+
+        ~ContextProviderBase()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }
