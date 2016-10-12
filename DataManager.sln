@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataManager", "Data.Engine\DataManager.csproj", "{1279A4CA-914A-4899-91CA-07B36915CC8D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataManager", "DataManager\DataManager.csproj", "{1279A4CA-914A-4899-91CA-07B36915CC8D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{DEE0FC66-ADF2-4300-A5EB-2D7A6EF965C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,22 @@ Global
 		{1279A4CA-914A-4899-91CA-07B36915CC8D}.Release|x64.Build.0 = Release|Any CPU
 		{1279A4CA-914A-4899-91CA-07B36915CC8D}.Release|x86.ActiveCfg = Release|Any CPU
 		{1279A4CA-914A-4899-91CA-07B36915CC8D}.Release|x86.Build.0 = Release|Any CPU
+		{DEE0FC66-ADF2-4300-A5EB-2D7A6EF965C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEE0FC66-ADF2-4300-A5EB-2D7A6EF965C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEE0FC66-ADF2-4300-A5EB-2D7A6EF965C9}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{DEE0FC66-ADF2-4300-A5EB-2D7A6EF965C9}.Debug|ARM.Build.0 = Debug|Any CPU
+		{DEE0FC66-ADF2-4300-A5EB-2D7A6EF965C9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DEE0FC66-ADF2-4300-A5EB-2D7A6EF965C9}.Debug|x64.Build.0 = Debug|Any CPU
+		{DEE0FC66-ADF2-4300-A5EB-2D7A6EF965C9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DEE0FC66-ADF2-4300-A5EB-2D7A6EF965C9}.Debug|x86.Build.0 = Debug|Any CPU
+		{DEE0FC66-ADF2-4300-A5EB-2D7A6EF965C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEE0FC66-ADF2-4300-A5EB-2D7A6EF965C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEE0FC66-ADF2-4300-A5EB-2D7A6EF965C9}.Release|ARM.ActiveCfg = Release|Any CPU
+		{DEE0FC66-ADF2-4300-A5EB-2D7A6EF965C9}.Release|ARM.Build.0 = Release|Any CPU
+		{DEE0FC66-ADF2-4300-A5EB-2D7A6EF965C9}.Release|x64.ActiveCfg = Release|Any CPU
+		{DEE0FC66-ADF2-4300-A5EB-2D7A6EF965C9}.Release|x64.Build.0 = Release|Any CPU
+		{DEE0FC66-ADF2-4300-A5EB-2D7A6EF965C9}.Release|x86.ActiveCfg = Release|Any CPU
+		{DEE0FC66-ADF2-4300-A5EB-2D7A6EF965C9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

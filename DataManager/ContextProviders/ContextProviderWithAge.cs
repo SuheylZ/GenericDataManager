@@ -1,0 +1,41 @@
+﻿using System;
+using System.Data.Entity;
+using System.Data.Objects;
+using GenericDataManager.Common;
+
+namespace GenericDataManager.Providers
+{
+    internal class ContextProviderWithAge : ContextProviderBase
+    {
+        readonly DateTime _createdAt;
+        DateTime _lastUsed;
+
+
+        internal ContextProviderWithAge(ConnectionParameters arg):base(arg)
+        {
+            _createdAt = DateTime.Now;
+            _lastUsed = _createdAt;
+        }
+
+        internal TimeSpan Age => DateTime.Now.Subtract(_createdAt);
+        internal TimeSpan LastUsed => DateTime.Now.Subtract(_lastUsed);
+        
+
+        public override DbContext DataContext
+        {
+            get
+            {
+                _lastUsed = DateTime.Now;
+                return base.DataContext;
+            }
+        }
+        public override ObjectContext ObjectContext
+        {
+            get
+            {
+                _lastUsed = DateTime.Now;
+                return base.ObjectContext;
+            }
+        }
+    }
+}
