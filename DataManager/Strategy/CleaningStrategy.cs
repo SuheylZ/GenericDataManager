@@ -10,44 +10,44 @@ using GenericDataManager.Providers;
 
 namespace GenericDataManager.Strategies
 {
-    public class CleaningStrategy : ICleaningStrategy
+    public class CleaningStrategy: IDisposable 
     {
         protected readonly IContextMap _map;
         protected readonly ExecutionPolicy KPolicy;
-        protected readonly System.Timers.Timer _timer;
+        //protected readonly System.Timers.Timer _timer;
 
         internal CleaningStrategy(IContextMap map, ExecutionPolicy policy)
         {
             KPolicy = policy;
             _map = map;
 
-            _timer = new System.Timers.Timer(KPolicy.HeartBeat.TotalMilliseconds);
-            _timer.Elapsed += (sender, args) =>
-             {
-                 _timer.Enabled = false;
-                 Clean();
-                 _timer.Enabled = true;
-             };
+            //_timer = new System.Timers.Timer(KPolicy.HeartBeat.TotalMilliseconds);
+            //_timer.Elapsed += (sender, args) =>
+            // {
+            //     _timer.Enabled = false;
+            //     Clean();
+            //     _timer.Enabled = true;
+            // };
         }
 
-        protected virtual void Clean()
+        protected internal virtual void Clean()
         {
         }
 
-        void ICleaningStrategy.Start()
-        {
-            _timer.Start();
-        }
+        //void ICleaningStrategy.Start()
+        //{
+        //    //_timer.Start();
+        //}
 
-        void ICleaningStrategy.Stop() {
-            _timer.Stop();
-        }
+        //void ICleaningStrategy.Stop() {
+        //    //_timer.Stop();
+        //}
 
         void IDisposable.Dispose()
         {
             var builder = new AggregateExceptionBuilder("Error while disposing the DbContext objects");
 
-            _timer.Stop();
+            //_timer.Stop();
             var keys = _map.Keys;
             for (var i = 0; i < keys.Length; i++)
             {
@@ -57,20 +57,18 @@ namespace GenericDataManager.Strategies
                     builder.Add(new Exception($"Provider for thread {key} has {count} consumer(s)"));
                 (_map.Remove(key) as IDisposable).Dispose();
             }
-            _timer.Dispose();
+           // _timer.Dispose();
 
             if (KPolicy.FinalDisposalBehaviour == ManagerDisposalStrategy.DisposeButThrowIfInUse && builder.HasErrors)
                 throw builder.ToAggregateException();
         }
     }
 
-
-
     public class RemoveUnused: CleaningStrategy
     {
         internal RemoveUnused(IContextMap map, ExecutionPolicy policy) : base(map, policy) { }
 
-        protected override void Clean()
+        protected internal override void Clean()
         {
            foreach(var key in _map.Keys)
             {
@@ -88,7 +86,7 @@ namespace GenericDataManager.Strategies
     {
         internal RemoveOnlyWhenThreadIsDead(IContextMap map, ExecutionPolicy policy) : base(map, policy) { }
 
-        protected override void Clean()
+        protected internal override void Clean()
         {
             var keys = _map.Keys;
             foreach(var key in keys)
@@ -115,7 +113,7 @@ namespace GenericDataManager.Strategies
             _minAge = policy.MinimumAge;
         }
 
-        protected override void Clean()
+        protected internal override void Clean()
         {
             var values = _map.Values;
             var leastUsed = TimeSpan.Zero;

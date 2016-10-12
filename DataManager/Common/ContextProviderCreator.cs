@@ -8,15 +8,15 @@ using GenericDataManager.Common;
 using GenericDataManager.Interfaces;
 using GenericDataManager.Providers;
 
-namespace GenericDataManager.Strategies
+namespace GenericDataManager.Common
 {
-    public class CreationStrategy
+    public class ContextProviderCreator
     {
         readonly ConnectionParameters KConnection;
         readonly ExecutionPolicy KPolicy;
 
 
-        public CreationStrategy(ConnectionParameters connection, ExecutionPolicy policy)
+        public ContextProviderCreator(ConnectionParameters connection, ExecutionPolicy policy)
         {
             KConnection = connection;
             KPolicy = policy;

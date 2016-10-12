@@ -25,7 +25,7 @@ namespace UnitTests
 
             var policy = new ExecutionPolicy
             {
-                PeriodicDisposalStrategy = Strategy.DoNothing,
+                PeriodicDisposalStrategy = Strategy.DisposeWhenNotInUse,
                 FinalDisposalBehaviour = ManagerDisposalStrategy.DisposeButThrowIfInUse
             };
 
@@ -117,6 +117,39 @@ namespace UnitTests
                 Thread.Sleep(5000);
         }
 
+        [TestMethod]
+        public void LengthyThreads()
+        {
+            Func<string, Thread> CreateThread = (threadName) => {
+                Action task = () =>
+                {
+                    using (var rep = manager.Repository.Get<Employee>())
+                    {
+                        var list = rep.All().Take(50).Select(x => x.ID).ToList();
+                        foreach (var it in list)
+                        {
+                            var tmp = rep.One(x => x.ID == it);
+                            tmp.Notes = tmp.Notes + $"{Thread.CurrentThread.Name}..";
+                            rep.Update(tmp);
+                        }
+                    }
+                };
 
+                var th = new Thread(() => task());
+                th.Name = threadName;
+                return th;
+            };
+
+            var threads = new List<Thread>(3);
+            for (var i = 1; i <= threads.Capacity; i++)
+                threads.Add(CreateThread($"t{i}"));
+
+            foreach (var it in threads)
+                it.Start();
+
+
+            while (threads.Count(x => x.IsAlive) > 0)
+                Thread.Sleep(TimeSpan.FromMinutes(1));
+        }
     }
 }

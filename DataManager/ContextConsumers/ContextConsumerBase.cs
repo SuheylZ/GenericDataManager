@@ -45,7 +45,15 @@ namespace GenericDataManager.Consumers
             //    }
             //}
             //else
+            try
+            {
                 _provider.DataContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
 
             if (EntityFrameworkVersion.Item1 <= 5)
                 EnsureConnectionOpen();

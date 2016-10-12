@@ -18,8 +18,8 @@ namespace GenericDataManager
         readonly ConnectionParameters KConnectionParameters;
         readonly ExecutionPolicy KPolicy;
 
-        readonly ICleaningStrategy _cleaner;
-        readonly CreationStrategy _creator;
+        readonly ICleaner _cleaner;
+        readonly ContextProviderCreator _creator;
 
         /// <summary>
         /// Establishes the connection and initializes internal structures
@@ -34,26 +34,25 @@ namespace GenericDataManager
             KConnectionParameters = arg;
             KPolicy = policy;
 
-            _creator = new CreationStrategy(KConnectionParameters, KPolicy);
-
+            _creator = new ContextProviderCreator(KConnectionParameters, KPolicy);
 
             switch (KPolicy.PeriodicDisposalStrategy)
             {
                 case Strategy.DisposeWithThread:
-                    _cleaner = new RemoveOnlyWhenThreadIsDead(_map, KPolicy);
+                    _cleaner = new Cleaner<RemoveOnlyWhenThreadIsDead>(_map, KPolicy);
                     break;
                 case Strategy.DisposeWhenNotInUse:
-                    _cleaner = new RemoveUnused(_map, KPolicy);
+                    _cleaner = new Cleaner<RemoveUnused>(_map, KPolicy);
                     break;
                 case Strategy.DisposeLeastRecentlyUsed:
-                    _cleaner = new RemoveLeastRecentlyUsed(_map, KPolicy);
+                    _cleaner = new Cleaner<RemoveLeastRecentlyUsed>(_map, KPolicy);
                     break;
                 default:
-                    this._cleaner = new CleaningStrategy(_map, KPolicy);
+                    this._cleaner = new Cleaner<CleaningStrategy>(_map, KPolicy);
                     break;
             }
-            _cleaner.Start();
 
+            _cleaner.Start();
         }
 
         public IDataRepository Repository
@@ -74,57 +73,8 @@ namespace GenericDataManager
         public void Dispose()
         {
             _cleaner.Dispose();
-
-            //AggregateExceptionBuilder builder = new AggregateExceptionBuilder("Error while disposing the DataManager");
-            //_cleaner.Stop();
-
-            //var keys = _map.Keys;
-            //var retries = 3;
-            //for(var i=0;i<keys.Length;i++)
-            //{
-            //    var key = keys[i];
-            //    var count = (_map[key].Provider as ContextProviderBase).ConsumerCount;
-            //    var canRemove = false;
-
-            //    if (count > 0)
-            //    {
-            //        switch (KPolicy.ManagerDisposeStrategy)
-            //        {
-            //            case ManagerDisposalStrategy.Default:
-            //            case ManagerDisposalStrategy.DisposeButThrowIfInUse:
-            //                builder.Add(new Exception($"Provider for thread {key} has {count} consumer(s)"));
-            //                canRemove = true;
-            //                break;
-
-            //            case ManagerDisposalStrategy.FailIfNotDisposed:
-            //                throw new Exception($"Context on thread {key} is still in use by {count} repositories");
-
-            //            case ManagerDisposalStrategy.RetryUntilDisposedOrFail:
-            //                Thread.Sleep(Convert.ToInt32(KPolicy.DisposalWait.TotalMilliseconds));
-            //                i--; //Retry
-            //                retries--;
-            //                if (retries == 0)
-            //                    throw new Exception($"Context on thread {key} is still in use by {count} repositories");
-            //                break;
-
-            //            case ManagerDisposalStrategy.DisposeSilentlyEvenIfInUse:
-            //                canRemove = true;
-            //                break;
-            //        }
-            //    }
-            //    else
-            //        canRemove = true;
-
-            //    if (canRemove) {
-            //        (_map.Remove(key) as IDisposable).Dispose();
-            //        retries = KPolicy.RetryCount;
-            //    }
-
-            //}
-
-            //if (builder.HasErrors)
-            //    throw builder.ToAggregateException();
         }
+
 
 #if DEBUG
         public override string ToString()

@@ -2,9 +2,10 @@
 
 namespace GenericDataManager.Interfaces
 {
-    public interface ICleaningStrategy:IDisposable
+    public interface ICleaner:IDisposable
     {
         void Start();
-        void Stop();
+        void Pause();
+        void Resume();
     }
 }

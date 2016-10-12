@@ -19,7 +19,7 @@
     <AssemblyVersionSettings>None.None.IncrementOnDemand.Increment</AssemblyVersionSettings>
     <PrimaryVersionType>AssemblyVersionAttribute</PrimaryVersionType>
     <AssemblyInfoFilePath>Properties\AssemblyInfo.cs</AssemblyInfoFilePath>
-    <AssemblyVersion>1.6.4.38</AssemblyVersion>
+    <AssemblyVersion>1.6.4.49</AssemblyVersion>
     <AssemblyFileVersionSettings>None.None.IncrementOnDemandWithReset.Increment</AssemblyFileVersionSettings>
     <AssemblyInfoVersionSettings>None.None.IncrementOnDemandWithReset.Increment</AssemblyInfoVersionSettings>
   </PropertyGroup>
@@ -115,11 +115,12 @@
     <Compile Include="Interfaces\IContextMap.cs" />
     <Compile Include="ContextProviders\SimpleContextProvider.cs" />
     <Compile Include="Interfaces\IDataRepositoryProvider.cs" />
+    <Compile Include="Strategy\Cleaner.cs" />
     <Compile Include="Strategy\CleaningStrategy.cs" />
     <Compile Include="Common\ContextMap.cs" />
     <Compile Include="ContextConsumers\EntityReaderWriter.cs" />
     <Compile Include="ContextConsumers\SqlDirect.cs" />
-    <Compile Include="Strategy\CreationStrategy.cs" />
+    <Compile Include="Common\ContextProviderCreator.cs" />
     <Compile Include="Interfaces\IDataManager.cs" />
     <Compile Include="Interfaces\IDataRepository.cs" />
     <Compile Include="Interfaces\ISqlDirect.cs" />
@@ -137,7 +138,7 @@
     <Compile Include="Common\QuickLock.cs" />
     <Compile Include="Common\ConnectionParameters.cs" />
     <Compile Include="Common\ThreadsMap.cs" />
-    <Compile Include="Strategy\ICleaningStrategy.cs" />
+    <Compile Include="Interfaces\ICleaner.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DataManager.snk" />
