@@ -1,6 +1,12 @@
 ﻿using System;
 using System.Data.Entity;
+#if EF5
+using System.Data.EntityClient;
 using System.Data.Objects;
+#else
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Core.EntityClient;
+#endif
 using GenericDataManager.Common;
 
 namespace GenericDataManager.Providers

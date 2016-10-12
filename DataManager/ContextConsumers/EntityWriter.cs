@@ -1,6 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+#if EF5
+using System.Data.EntityClient;
+using System.Data.Objects;
+#else
+using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Core.EntityClient;
+#endif
 using System.Linq;
 using System.Linq.Expressions;
 using GenericDataManager.Interfaces;

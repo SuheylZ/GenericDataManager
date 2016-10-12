@@ -5,6 +5,15 @@ using System.Linq;
 using System.Linq.Expressions;
 using GenericDataManager.Interfaces;
 
+#if EF5
+using System.Data.EntityClient;
+using System.Data.Objects;
+#else
+using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Core.EntityClient;
+#endif
+
 namespace GenericDataManager.Providers
 {
     class LegacyProvider<TEntity> :
@@ -97,7 +106,7 @@ namespace GenericDataManager.Providers
         void IEntityWriter<TEntity>.Update(IEnumerable<TEntity> list)
         {
             foreach (var it in list)
-                _provider.ObjectContext.ObjectStateManager.ChangeObjectState(it, System.Data.EntityState.Modified);
+                _provider.ObjectContext.ObjectStateManager.ChangeObjectState(it, EntityState.Modified);
     
             _provider.Save();
         }

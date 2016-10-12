@@ -1,6 +1,11 @@
 ﻿using System;
+#if EF5
+using System.Data.EntityClient;
 using System.Data.Objects;
-
+#else
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Core.EntityClient;
+#endif
 namespace GenericDataManager.Interfaces
 {
     /// <summary>

@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+#if EF5
 using System.Data.EntityClient;
 using System.Data.Objects;
+#else
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Core.EntityClient;
+#endif
 using System.Diagnostics.Contracts;
 using System.Threading;
 using GenericDataManager.Common;

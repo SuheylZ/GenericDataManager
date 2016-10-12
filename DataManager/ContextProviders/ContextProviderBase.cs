@@ -2,9 +2,17 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+
 using System.Data.Entity.Infrastructure;
+
+#if EF5
 using System.Data.EntityClient;
 using System.Data.Objects;
+#else
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Core.EntityClient;
+#endif
+
 using System.Threading;
 using GenericDataManager.Common;
 using GenericDataManager.Consumers;
