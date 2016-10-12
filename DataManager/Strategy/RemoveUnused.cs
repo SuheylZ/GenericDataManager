@@ -19,7 +19,7 @@ namespace GenericDataManager.Strategies
                 var provider = _map[key].Provider as ContextProviderBase;
                 if (provider.ConsumerCount == 0)
                 {
-                    _map.Remove(key);
+                    //_map.Remove(key);
                     provider.Dispose();
                 }
             }
