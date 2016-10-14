@@ -8,7 +8,7 @@ using GenericDataManager.Providers;
 namespace GenericDataManager.Strategies
 {
     public class RemoveLeastRecentlyUsed :
-        CleaningStrategy
+        CleaningStrategyBase
     {
         readonly TimeSpan _minAge = TimeSpan.FromSeconds(10);
         Func<TimeSpan, bool> IsOlder => (age) => TimeSpan.Compare(_minAge, age) < 0;
@@ -47,6 +47,7 @@ namespace GenericDataManager.Strategies
                 if (tmp != null && IsOlder(tmp.LastUsed))
                 {
                     var disposable = _map.Remove(key);
+                    if(disposable !=null)
                     disposable.Dispose();
                 }
 

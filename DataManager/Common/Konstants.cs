@@ -12,8 +12,9 @@ namespace GenericDataManager.Common
         internal static readonly TimeSpan DefaultMinimumAge = TimeSpan.FromSeconds(3);
         internal const int EstimatedThreads=10;
 
-        public static readonly TimeSpan DefaultDisposalWait = TimeSpan.FromSeconds(10);
-        public const int DefaultRetries=3;
+        internal static readonly TimeSpan DefaultDisposalWait = TimeSpan.FromSeconds(10);
+        internal const int DefaultRetries=3;
+        internal const string CleanerName= "Demon: GenericDataManagermon Cleaner";
 
         internal static Tuple<int,int, int, int> GetEntityFrameworkVersion()
         {

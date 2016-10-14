@@ -5,7 +5,7 @@ using GenericDataManager.Interfaces;
 namespace GenericDataManager.Strategies
 {
     public class RemoveOnlyWhenThreadIsDead :
-        CleaningStrategy
+        CleaningStrategyBase
     {
         internal RemoveOnlyWhenThreadIsDead(IContextMap map, ExecutionPolicy policy) : base(map, policy) { }
 

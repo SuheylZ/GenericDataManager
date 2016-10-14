@@ -8,7 +8,7 @@ using GenericDataManager.Providers;
 namespace GenericDataManager.Strategies
 {
     public class RemoveUnused :
-        CleaningStrategy
+        CleaningStrategyBase
     {
         internal RemoveUnused(IContextMap map, ExecutionPolicy policy) : base(map, policy) { }
 
@@ -17,7 +17,7 @@ namespace GenericDataManager.Strategies
             foreach (var key in _map.Keys)
             {
                 var provider = _map[key].Provider as ContextProviderBase;
-                if (provider.ConsumerCount == 0)
+                if (provider!=null && provider.ConsumerCount == 0)
                 {
                     _map.Remove(key);
                     provider.Dispose();

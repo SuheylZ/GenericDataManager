@@ -14,10 +14,14 @@ namespace GenericDataManager.Common
     {
         Default,
         DisposeButThrowIfInUse,
-        //RetryUntilDisposedOrFail,
-        //FailIfNotDisposed,
         DisposeSilentlyEvenIfInUse
-   }
+
+        // They have been removed after a comment received: 
+        // If it's time to dispose, why waiting and retrying or even not disposing at all?
+
+        //RetryUntilDisposedOrFail,   
+        //FailIfNotDisposed,
+    }
 
 
     public class ExecutionPolicy

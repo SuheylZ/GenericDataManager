@@ -7,13 +7,13 @@ using GenericDataManager.Providers;
 
 namespace GenericDataManager.Strategies
 {
-    public class CleaningStrategy: 
+    public class CleaningStrategyBase: 
         IDisposable 
     {
         protected readonly IContextMap _map;
         protected readonly ExecutionPolicy KPolicy;
 
-        internal CleaningStrategy(IContextMap map, ExecutionPolicy policy)
+        internal CleaningStrategyBase(IContextMap map, ExecutionPolicy policy)
         {
             KPolicy = policy;
             _map = map;
@@ -27,16 +27,20 @@ namespace GenericDataManager.Strategies
         {
             var builder = new AggregateExceptionBuilder("Error while disposing the DbContext objects");
 
-            var keys = _map.Keys;
-            for (var i = 0; i < keys.Length; i++)
+            var keys = _map.Keys;       //Keys will change so get a snapshot before starting to remove and use this snapshot 
+            foreach (var key in keys)
             {
-                var key = keys[i];
-                var count = (_map[key].Provider as ContextProviderBase).ConsumerCount;
-                if (count > 0)
-                    builder.Add(new Exception($"Provider for thread {key} has {count} consumer(s)"));
-                var item = _map.Remove(key);
-                if (item != null)
-                    item.Dispose();
+                try
+                {
+                    var provider = _map.Remove(key) as ContextProviderBase;
+                    if (provider.ConsumerCount > 0)
+                        builder.Add(new Exception($"Provider for thread {key} has {provider.ConsumerCount} consumer(s)"));
+                    provider.Dispose();
+                }
+                catch(Exception ex)
+                {
+                    builder.Add(ex);
+                }
             }
 
             if (KPolicy.FinalDisposalBehaviour == ManagerDisposalStrategy.DisposeButThrowIfInUse && builder.HasErrors)

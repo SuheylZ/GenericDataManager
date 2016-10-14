@@ -48,7 +48,7 @@ namespace GenericDataManager
                     _cleaner = new Cleaner<RemoveLeastRecentlyUsed>(_map, KPolicy);
                     break;
                 default:
-                    this._cleaner = new Cleaner<CleaningStrategy>(_map, KPolicy);
+                    this._cleaner = new Cleaner<CleaningStrategyBase>(_map, KPolicy);
                     break;
             }
 

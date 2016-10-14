@@ -11,38 +11,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace UnitTests
 {
     [TestClass]
-    public class PolicyManager
+    public class PolicyManager: TestBase
     {
-        IDataRepositoryProvider manager;
-        
-        [TestInitialize]
-        public void Init()
-        {
-            var arg = new ConnectionParameters(
-                ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString,
-                ConfigurationManager.AppSettings["model"],
-                10);
-
-            var policy = new ExecutionPolicy
-            {
-                PeriodicDisposalStrategy = Strategy.DisposeWhenNotInUse,
-                FinalDisposalBehaviour = ManagerDisposalStrategy.DisposeButThrowIfInUse
-            };
-
-            manager = new DataManagerWithPolicy(arg, policy);
-        }
-
-        [TestCleanup]
-        public void Destroy()
-        {
-            if (manager != null)
-                manager.Dispose();
-        }
-
-
-        // //////////////////////////////////////////////////////////////////
-
-
         [TestMethod]
         public void SingleInsert()
         {
@@ -120,8 +90,8 @@ namespace UnitTests
         [TestMethod]
         public void LengthyThreads()
         {
-            Func<string, Thread> CreateThread = (threadName) => {
-                Action task = () =>
+            Func<string, Thread> CreateTurtleThread = (threadName) => {
+                Action turtleTask = () =>
                 {
                     using (var rep = manager.Repository.Get<Employee>())
                     {
@@ -131,18 +101,20 @@ namespace UnitTests
                             var tmp = rep.One(x => x.ID == it);
                             tmp.Notes = tmp.Notes + $"{Thread.CurrentThread.Name}..";
                             rep.Update(tmp);
+
+                            Thread.Sleep(1000);
                         }
                     }
                 };
 
-                var th = new Thread(() => task());
+                var th = new Thread(() => turtleTask());
                 th.Name = threadName;
                 return th;
             };
 
             var threads = new List<Thread>(3);
             for (var i = 1; i <= threads.Capacity; i++)
-                threads.Add(CreateThread($"t{i}"));
+                threads.Add(CreateTurtleThread($"turtle{i}"));
 
             foreach (var it in threads)
                 it.Start();

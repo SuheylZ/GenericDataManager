@@ -19,7 +19,7 @@
     <AssemblyVersionSettings>None.None.IncrementOnDemand.Increment</AssemblyVersionSettings>
     <PrimaryVersionType>AssemblyVersionAttribute</PrimaryVersionType>
     <AssemblyInfoFilePath>Properties\AssemblyInfo.cs</AssemblyInfoFilePath>
-    <AssemblyVersion>1.6.4.60</AssemblyVersion>
+    <AssemblyVersion>2.0.0.70</AssemblyVersion>
     <AssemblyFileVersionSettings>None.None.IncrementOnDemandWithReset.Increment</AssemblyFileVersionSettings>
     <AssemblyInfoVersionSettings>None.None.IncrementOnDemandWithReset.Increment</AssemblyInfoVersionSettings>
   </PropertyGroup>
@@ -113,6 +113,8 @@
     <Compile Include="Common\Countable.cs" />
     <Compile Include="Common\ExecutionPolicy.cs" />
     <Compile Include="Common\SandBox.cs" />
+    <Compile Include="Common\SharedData.cs" />
+    <Compile Include="Common\ThreadRest.cs" />
     <Compile Include="Interfaces\IContextMap.cs" />
     <Compile Include="ContextProviders\SimpleContextProvider.cs" />
     <Compile Include="Interfaces\IDataRepositoryProvider.cs" />

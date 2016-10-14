@@ -79,6 +79,6 @@ namespace GenericDataManager.Common
         int[] IContextMap.Keys => _map.Keys.ToArray();
         ContextProviderThreadPair[] IContextMap.Values => _map.Values.ToArray();
         bool IContextMap.Has(Thread thread) => _map.ContainsKey(thread.ManagedThreadId);
-
+        int IContextMap.Count => _map.Count;
     }
 }

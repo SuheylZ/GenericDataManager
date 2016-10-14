@@ -15,5 +15,6 @@ namespace GenericDataManager.Interfaces
         ContextProviderThreadPair[] Clear();
         bool Has(Thread thread);
         IContextProvider Remove(int id);
+        int Count { get; }
     }
 }
