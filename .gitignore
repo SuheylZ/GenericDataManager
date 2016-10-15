@@ -1,0 +1,12 @@
+/DataManager/bin/
+/DataManager/obj/
+/Samples/My First App/bin/
+/Samples/My First App/obj/
+/Samples/Polly and Molly/bin/
+/Samples/Polly and Molly/obj/
+/Samples/Sample.Entities/bin/
+/Samples/Sample.Entities/obj/
+/UnitTests/bin/
+/UnitTests/obj/
+/TestResults/
+/packages/

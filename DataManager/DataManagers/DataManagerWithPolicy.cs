@@ -11,7 +11,8 @@ namespace GenericDataManager
     /// <summary>
     /// DataManager keeps track of all EntityOperations and provides a single instantiation of EntityOperation of each particular entity.
     /// </summary>
-    public class DataManagerWithPolicy: IDataRepositoryProvider
+    public class DataManagerWithPolicy: 
+        IDataRepositoryProvider
     {
         readonly static IContextMap _map = new ContextMap(Konstants.EstimatedThreads);
 
@@ -51,8 +52,10 @@ namespace GenericDataManager
                     this._cleaner = new Cleaner<CleaningStrategyBase>(_map, KPolicy);
                     break;
             }
-
             _cleaner.Start();
+
+            //This is done so that the model can be loaded
+            var rep = (this as IDataRepositoryProvider).Repository;
         }
 
         IDataRepository IDataRepositoryProvider.Repository
