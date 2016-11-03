@@ -10,11 +10,12 @@ namespace GenericDataManager.Strategies
     public class RemoveLeastRecentlyUsed :
         CleaningStrategyBase
     {
-        readonly TimeSpan _minAge = TimeSpan.FromSeconds(10);
+        readonly TimeSpan _minAge;
         Func<TimeSpan, bool> IsOlder => (age) => TimeSpan.Compare(_minAge, age) < 0;
 
         internal RemoveLeastRecentlyUsed(IContextMap map, ExecutionPolicy policy) : base(map, policy)
         {
+            _minAge = TimeSpan.FromSeconds(10);
             _minAge = policy.MinimumAge;
         }
 

@@ -26,7 +26,9 @@ namespace GenericDataManager.Common
         /// Instantiates a QuickLock with a specified duration to use between successive lock checking
         /// </summary>
         /// <param name="maxWait">The duration between two successive lock checking</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#if NET45
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public QuickLock(TimeSpan maxWait)
         {
             Interlocked.Exchange(ref _value, 0);
@@ -36,26 +38,35 @@ namespace GenericDataManager.Common
             KMessage = $"Cannot continue further. Lock is longer than {TimeSpan.FromMilliseconds(KDelay * K_MAX_TRIES).TotalSeconds} second(s)";
 
         }
-        
+
         /// <summary>
         /// Tries 10 times to gain the lock. If it fails after 10 tries, throws TimeoutExpiration exception  
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#if NET45
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public void Lock()
         {
             var tries = K_MAX_TRIES;
 
-            while (Interlocked.CompareExchange(ref _value, 1, 0)!=0) {
+            while (Interlocked.CompareExchange(ref _value, 1, 0)!=0)
+            {
                 if(tries--<1)
                     throw new TimeoutException(KMessage);
                 Thread.Sleep(KDelay);
             }
        }
 
-         /// <summary>
+        public bool IsLocked => Interlocked.CompareExchange(ref _value, -1, -1) == 1;
+      
+
+
+        /// <summary>
         /// Unlocked a previous lock 
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#if NET45
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public void Unlock() {
            Interlocked.Exchange(ref _value, 0);
         }

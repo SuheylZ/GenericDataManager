@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading;
 
 namespace GenericDataManager.Common
 {
     public class SharedData<T> where T:class
     {
-        static volatile T _data;
+        T _data;
         ReaderWriterLockSlim _lock;
 
         public SharedData(T arg)

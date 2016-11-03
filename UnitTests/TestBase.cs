@@ -72,7 +72,8 @@ namespace UnitTests
             var policy = new ExecutionPolicy
             {
                 PeriodicDisposalStrategy = Strategy.DisposeWhenNotInUse,
-                FinalDisposalBehaviour = ManagerDisposalStrategy.DisposeButThrowIfInUse
+                FinalDisposalBehaviour = ManagerDisposalStrategy.DisposeButThrowIfInUse, 
+                HeartBeat = TimeSpan.FromSeconds(30)
             };
 
             manager = new DataManagerWithPolicy(arg, policy);

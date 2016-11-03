@@ -14,7 +14,7 @@ namespace GenericDataManager
     public class DataManagerWithPolicy: 
         IDataRepositoryProvider
     {
-        readonly static IContextMap _map = new ContextMap(Konstants.EstimatedThreads);
+        static readonly IContextMap _map = new ContextMap(Konstants.EstimatedThreads);
 
         readonly ConnectionParameters KConnectionParameters;
         readonly ExecutionPolicy KPolicy;
@@ -36,26 +36,34 @@ namespace GenericDataManager
             KPolicy = policy;
 
             _creator = new ContextProviderCreator(KConnectionParameters, KPolicy);
+            _cleaner = CreateCleaner(KPolicy.PeriodicDisposalStrategy);
 
-            switch (KPolicy.PeriodicDisposalStrategy)
-            {
-                case Strategy.DisposeWithThread:
-                    _cleaner = new Cleaner<RemoveOnlyWhenThreadIsDead>(_map, KPolicy);
-                    break;
-                case Strategy.DisposeWhenNotInUse:
-                    _cleaner = new Cleaner<RemoveUnused>(_map, KPolicy);
-                    break;
-                case Strategy.DisposeLeastRecentlyUsed:
-                    _cleaner = new Cleaner<RemoveLeastRecentlyUsed>(_map, KPolicy);
-                    break;
-                default:
-                    this._cleaner = new Cleaner<CleaningStrategyBase>(_map, KPolicy);
-                    break;
-            }
             _cleaner.Start();
 
             //This is done so that the model can be loaded
             var rep = (this as IDataRepositoryProvider).Repository;
+        }
+
+        ICleaner CreateCleaner(Strategy strategy)
+        {
+            ICleaner cleaner;
+
+            switch (strategy)
+            {
+                case Strategy.DisposeWithThread:
+                    cleaner = new Cleaner<RemoveOnlyWhenThreadIsDead>(_map, KPolicy);
+                    break;
+                case Strategy.DisposeWhenNotInUse:
+                    cleaner = new Cleaner<RemoveUnused>(_map, KPolicy);
+                    break;
+                case Strategy.DisposeLeastRecentlyUsed:
+                    cleaner = new Cleaner<RemoveLeastRecentlyUsed>(_map, KPolicy);
+                    break;
+                default:
+                    cleaner = new Cleaner<CleaningStrategyBase>(_map, KPolicy);
+                    break;
+            }
+            return cleaner;
         }
 
         IDataRepository IDataRepositoryProvider.Repository
@@ -81,17 +89,17 @@ namespace GenericDataManager
 
 
         #region IDisposable Support
-        private bool disposedValue = false; 
+        private bool _disposedValue = false; 
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_disposedValue)
             {
                 if (disposing)
                 {
                    _cleaner.Dispose(); 
                 }
-                disposedValue = true;
+                _disposedValue = true;
             }
         }
 

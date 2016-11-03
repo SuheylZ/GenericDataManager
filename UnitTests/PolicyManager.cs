@@ -66,6 +66,7 @@ namespace UnitTests
                             var tmp = rep.One(x => x.ID == it);
                             tmp.Notes = tmp.Notes + $"{Thread.CurrentThread.Name}..";
                             rep.Update(tmp);
+                            Thread.Sleep(500);
                         }
                     }
                 };
@@ -76,7 +77,7 @@ namespace UnitTests
             };
 
 
-            var threads = new List<Thread>(100);
+            var threads = new List<Thread>(10);
             for (var i = 1; i <= threads.Capacity; i++)
                 threads.Add(CreateThread($"t{i}"));
 

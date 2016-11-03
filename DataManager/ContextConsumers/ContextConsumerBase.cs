@@ -28,15 +28,7 @@ namespace GenericDataManager.Consumers
             if (EntityFrameworkVersion.Item1 <= 5)
                 EnsureConnectionOpen();
 
-            //if (false)
-            //{
-            //    using (var trx = _provider.DataContext.Database.Connection.BeginTransaction(System.Data.IsolationLevel.ReadCommitted))
-            //    {
-            //        _provider.DataContext.SaveChanges();
-            //        trx.Commit();
-            //    }
-            //}
-            //else
+
             try
             {
                 _provider.DataContext.SaveChanges();
