@@ -66,7 +66,10 @@ namespace GenericDataManager
             return cleaner;
         }
 
-        IDataRepository IDataRepositoryProvider.Repository
+        /// <summary>
+        /// Provides the access to the custom repositories through the Get() method
+        /// </summary>
+        public IDataRepository Repository
         {
             get
             {
