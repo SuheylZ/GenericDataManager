@@ -59,7 +59,7 @@ namespace GenericDataManager.Consumers
                 if (disposing)
                 {
                    _provider.Release(this, _key);
-                    _provider = null;
+                    //_provider = null;   -- not required as cleaner will take care of the providers
                 }
                 disposedValue = true;
             }
